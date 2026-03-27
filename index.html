@@ -4,150 +4,187 @@
 <meta charset="UTF-8">
 <title>Rose Bag</title>
 <style>
-body { font-family: Arial; background-color: #fff0f5; margin:0; text-align:center; }
+body { font-family: Arial; background-color:#fff0f5; margin:0; text-align:center; }
 
-header { background-color: #d63384; color:white; padding:20px; font-size:30px; }
+header { background:#d63384; color:white; padding:20px; font-size:30px; }
 
-#productsContainer { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:20px; padding:20px; }
+#loginPage, #mainSite { padding:20px; }
 
-.product { background:white; border-radius:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); padding:15px; transition:0.3s; }
-.product:hover { transform:translateY(-5px); }
+.login-box { background:white; padding:20px; border-radius:15px; width:300px; margin:auto; margin-top:100px; }
+input { width:90%; padding:10px; margin:10px; }
+button { background:#d63384; color:white; border:none; padding:10px; cursor:pointer; margin:5px; border-radius:5px; }
 
-.gallery { display:grid; grid-template-columns:repeat(2,1fr); gap:5px; }
-.gallery img { width:100%; height:100px; object-fit:cover; border-radius:10px; cursor:pointer; transition:0.3s; }
+.product { background:white; border-radius:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); padding:15px; margin:20px auto; width:250px; }
+.gallery { display:flex; flex-direction:column; gap:5px; }
+.gallery img { width:100%; height:200px; object-fit:cover; border-radius:10px; cursor:pointer; transition:0.3s; }
 .gallery img:hover { transform:scale(1.05); }
 
 .colors { margin:10px 0; }
 .color { width:20px; height:20px; display:inline-block; border-radius:50%; cursor:pointer; border:2px solid #fff; margin:2px; }
 .active-color { border-color:#000; }
 
-button { background-color:#d63384; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer; margin-top:10px; }
-
 .footer { margin-top:30px; padding:20px; background:#d63384; color:white; }
 
-.modal { display:none; position:fixed; z-index:1000; padding-top:60px; left:0; top:0; width:100%; height:100%; background-color: rgba(0,0,0,0.8); }
-.modal img { display:block; margin:auto; max-width:80%; max-height:80%; border-radius:10px; }
+.modal { display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); }
+.modal img { display:block; margin:auto; max-width:80%; max-height:80%; margin-top:50px; }
 #closeModal { position:absolute; top:10px; right:20px; font-size:30px; color:white; cursor:pointer; }
-#prev,#next { position:absolute; top:50%; transform:translateY(-50%); font-size:40px; color:white; cursor:pointer; padding:10px; user-select:none; }
-#prev { left:10px; }
-#next { right:10px; }
 
-/* Splash */
-#splash { position:fixed; width:100%; height:100%; background:#fff0f5; display:flex; align-items:center; justify-content:center; z-index:9999; }
+#splash { position:fixed; width:100%; height:100%; background:#fff0f5; display:flex; justify-content:center; align-items:center; z-index:9999; }
 #splashLogo { width:200px; transition: transform 4s ease; }
 #splash.show #splashLogo { transform:scale(1.5); }
+
+.lang-btn { position:absolute; top:10px; right:10px; padding:5px 10px; border-radius:5px; }
 </style>
 </head>
 <body>
 
-<div id="splash">
-  <img src="logo.jpg" alt="Rose Bag" id="splashLogo">
+<!-- زر اللغة -->
+<button class="lang-btn" onclick="toggleLang()">🌐</button>
+
+<!-- تسجيل الدخول -->
+<div id="loginPage">
+  <div class="login-box">
+    <h2 id="loginTitle">تسجيل الدخول</h2>
+    <input type="text" id="username" placeholder="اسم المستخدم">
+    <input type="password" id="password" placeholder="كلمة المرور">
+    <button onclick="login()" id="loginBtn">دخول</button>
+    <p id="error" style="color:red;"></p>
+  </div>
 </div>
 
-<header>🌸 Rose Bag 🌸</header>
-<h2>أهلا وسهلاً </h2>
+<!-- شاشة البداية -->
+<div id="splash" style="display:none;">
+  <img src="logo.jpg" id="splashLogo" alt="Logo">
+</div>
 
+<!-- الموقع -->
+<div id="mainSite" style="display:none;">
+<header id="title">🌸 Rose Bag 🌸</header>
+<h2 id="subtitle">أحدث الشنط</h2>
 <div id="productsContainer"></div>
-
 <div class="footer">📞 للتواصل واتساب: 201080167099</div>
+</div>
 
-<!-- Modal -->
+<!-- مودال الصور -->
 <div id="myModal" class="modal">
-    <span id="closeModal">&times;</span>
-    <span id="prev">&#10094;</span>
-    <span id="next">&#10095;</span>
-    <img id="modalImg">
+  <span id="closeModal">&times;</span>
+  <img id="modalImg">
 </div>
 
 <script>
+let lang="ar";
 const products = [
-    {id:1, colors:["black","red","blue"]},
-    {id:2, colors:["black","white","red"]},
-    {id:3, colors:["brown","black","beige"]},
-    {id:4, colors:["black","red","pink"]},
-    {id:5, colors:["blue","white","pink"]},
-    {id:6, colors:["black","gray","brown"]},
-    {id:7, colors:["red","pink","white"]},
-    {id:8, colors:["black","brown","beige"]},
-    {id:9, colors:["blue","gray","black"]},
-    {id:10, colors:["pink","white","red"]}
+  {id:1, colors:["black","red","blue"]},
+  {id:2, colors:["black","white","red"]},
+  {id:3, colors:["brown","black","beige"]},
+  {id:4, colors:["black","red","pink"]},
+  {id:5, colors:["blue","white","pink"]},
+  {id:6, colors:["black","gray","brown"]},
+  {id:7, colors:["red","pink","white"]},
+  {id:8, colors:["black","brown","beige"]},
+  {id:9, colors:["blue","gray","black"]},
+  {id:10, colors:["pink","white","red"]}
 ];
 
-let currentImages = [];
-let currentIndex = 0;
+let currentImages=[], currentIndex=0;
 
-function openImageGallery(images, index){
-    currentImages = images;
-    currentIndex = index;
-    const modal = document.getElementById("myModal");
-    modal.style.display="block";
-    document.getElementById("modalImg").src = currentImages[currentIndex];
+// تبديل اللغة
+function toggleLang(){
+  if(lang==="ar"){
+    lang="en";
+    document.documentElement.lang="en";
+    document.getElementById("loginTitle").innerText="Login";
+    document.getElementById("loginBtn").innerText="Login";
+    document.getElementById("username").placeholder="Username";
+    document.getElementById("password").placeholder="Password";
+    document.getElementById("title").innerText="Rose Bag";
+    document.getElementById("subtitle").innerText="Latest Bags";
+  }else{
+    lang="ar";
+    document.documentElement.lang="ar";
+    document.getElementById("loginTitle").innerText="تسجيل الدخول";
+    document.getElementById("loginBtn").innerText="دخول";
+    document.getElementById("username").placeholder="اسم المستخدم";
+    document.getElementById("password").placeholder="كلمة المرور";
+    document.getElementById("title").innerText="🌸 Rose Bag 🌸";
+    document.getElementById("subtitle").innerText="أحدث الشنط";
+  }
 }
 
-function changeColor(productId, color){
-    const gallery = document.querySelector(`#product${productId} .gallery`);
-    const images = [
-        `bag${productId}_${color}_front.jpg`,
-        `bag${productId}_${color}_side.jpg`,
-        `bag${productId}_${color}_back.jpg`,
-        `bag${productId}_${color}_open.jpg`
+// تسجيل الدخول
+function login(){
+  let user=document.getElementById("username").value;
+  let pass=document.getElementById("password").value;
+  if(user==="admin" && pass==="1234"){
+    document.getElementById("loginPage").style.display="none";
+    document.getElementById("splash").style.display="flex";
+    setTimeout(showMainSite,2000);
+  }else{
+    document.getElementById("error").innerText=(lang==="ar"?"بيانات غلط!":"Wrong data!");
+  }
+}
+
+function showMainSite(){
+  document.getElementById("splash").style.display="none";
+  document.getElementById("mainSite").style.display="block";
+  loadProducts();
+}
+
+// عرض المنتجات
+function loadProducts(){
+  const container=document.getElementById("productsContainer");
+  container.innerHTML="";
+  products.forEach(p=>{
+    const defaultColor=p.colors[0];
+    const images=[
+      `bag${p.id}_${defaultColor}_front.jpg`,
+      `bag${p.id}_${defaultColor}_side.jpg`,
+      `bag${p.id}_${defaultColor}_back.jpg`,
+      `bag${p.id}_${defaultColor}_open.jpg`
     ];
-    gallery.innerHTML = images.map((img,i)=>`<img src="${img}" onclick="openImageGallery(${JSON.stringify(images)},${i})">`).join("");
-
-    const colorSpans = document.querySelectorAll(`#colors${productId} .color`);
-    colorSpans.forEach(span=>{
-        span.classList.remove("active-color");
-        if(span.style.backgroundColor === color) span.classList.add("active-color");
-    });
+    container.innerHTML+=`
+      <div class="product" id="product${p.id}">
+        <div class="gallery">
+          ${images.map((img,i)=>`<img src="${img}" onclick='openImage(${JSON.stringify(images)},${i})'>`).join("")}
+        </div>
+        <div class="colors" id="colors${p.id}">
+          ${p.colors.map((c,index)=>`<span class="color ${index===0?"active-color":""}" style="background:${c}" onclick="changeColor(${p.id},'${c}')"></span>`).join("")}
+        </div>
+        <h3>${lang==="ar"?"شنطة":"Bag"} ${p.id}</h3>
+        <p>${lang==="ar"?"السعر":"Price"}: ${200+p.id*10} جنيه</p>
+        <a href="https://wa.me/201080167099?text=عايزة%20اطلب%20شنطة%20${p.id}">
+          <button>${lang==="ar"?"اطلب الآن":"Order Now"}</button>
+        </a>
+      </div>`;
+  });
 }
 
-// أسهم المودال
-document.getElementById("prev").onclick = function(e){
-    e.stopPropagation();
-    currentIndex = (currentIndex-1+currentImages.length)%currentImages.length;
-    document.getElementById("modalImg").src = currentImages[currentIndex];
+// تغيير اللون
+function changeColor(productId,color){
+  const gallery=document.querySelector(`#product${productId} .gallery`);
+  const images=[
+    `bag${productId}_${color}_front.jpg`,
+    `bag${productId}_${color}_side.jpg`,
+    `bag${productId}_${color}_back.jpg`,
+    `bag${productId}_${color}_open.jpg`
+  ];
+  gallery.innerHTML=images.map((img,i)=>`<img src="${img}" onclick='openImage(${JSON.stringify(images)},${i})'>`).join("");
+  const colorSpans=document.querySelectorAll(`#colors${productId} .color`);
+  colorSpans.forEach(span=>{
+    span.classList.remove("active-color");
+    if(span.style.backgroundColor===color) span.classList.add("active-color");
+  });
 }
-document.getElementById("next").onclick = function(e){
-    e.stopPropagation();
-    currentIndex = (currentIndex+1)%currentImages.length;
-    document.getElementById("modalImg").src = currentImages[currentIndex];
+
+// المودال
+function openImage(images,index){
+  currentImages=images;
+  currentIndex=index;
+  document.getElementById("myModal").style.display="block";
+  document.getElementById("modalImg").src=currentImages[currentIndex];
 }
+document.getElementById("closeModal").onclick=function(){document.getElementById("myModal").style.display="none";}
 
-// إغلاق المودال
-document.getElementById("closeModal").onclick = function(){ document.getElementById("myModal").style.display="none"; }
-document.getElementById("modalImg").onclick = function(event){ event.stopPropagation(); }
-
-window.onload = function(){
-    const splash = document.getElementById("splash");
-    splash.classList.add("show");
-    setTimeout(()=>{ splash.style.display='none'; }, 4000);
-
-    const container = document.getElementById("productsContainer");
-    products.forEach(p=>{
-        const defaultColor = p.colors[0];
-        const images = [
-            `bag${p.id}_${defaultColor}_front.jpg`,
-            `bag${p.id}_${defaultColor}_side.jpg`,
-            `bag${p.id}_${defaultColor}_back.jpg`,
-            `bag${p.id}_${defaultColor}_open.jpg`
-        ];
-        container.innerHTML += `
-        <div class="product" id="product${p.id}">
-            <div class="gallery">
-                ${images.map((img,i)=>`<img src="${img}" onclick='openImageGallery(${JSON.stringify(images)},${i})'>`).join("")}
-            </div>
-            <div class="colors" id="colors${p.id}">
-                ${p.colors.map((c,index)=>`<span class="color ${index===0?'active-color':''}" style="background:${c}" onclick="changeColor(${p.id},'${c}')"></span>`).join("")}
-            </div>
-            <h3>شنطة ${p.id}</h3>
-            <p>السعر: ${200 + p.id*10} جنيه</p>
-            <a href="https://wa.me/201080167099?text=عايزة%20اطلب%20شنطة%20${p.id}">
-                <button>اطلب الآن</button>
-            </a>
-        </div>`;
-    });
-};
 </script>
-
 </body>
 </html>
