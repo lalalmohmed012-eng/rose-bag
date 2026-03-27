@@ -4,99 +4,60 @@
 <meta charset="UTF-8">
 <title>Rose Bag</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background-color: #fff0f5;
-  }
+body { font-family: Arial; background-color: #fff0f5; margin:0; text-align:center; }
 
-  /* صفحة تسجيل الدخول */
-  #loginPage {
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    height:100vh;
-  }
-  #loginPage input {
-    padding:10px;
-    margin:5px;
-    width:200px;
-  }
-  #loginPage button {
-    padding:10px 20px;
-    margin-top:10px;
-    background-color:#d63384;
-    color:white;
-    border:none;
-    border-radius:5px;
-    cursor:pointer;
-  }
-  #loginPage button:hover {
-    background-color:#c12d76;
-  }
+/* تسجيل الدخول */
+#loginPage {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+}
+#loginPage input {
+  padding:10px;
+  margin:5px;
+  width:200px;
+}
+#loginPage button {
+  padding:10px 20px;
+  margin-top:10px;
+  background-color:#d63384;
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+#loginPage button:hover { background-color:#c12d76; }
+#loginError { color:red; margin-top:5px; }
 
-  /* شاشة سبلاش */
-  #splash {
-    display:none;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    height:100vh;
-  }
-  #splashLogo {
-    width:200px;
-    height:auto;
-    animation: scaleUp 2s ease-in-out;
-  }
-  @keyframes scaleUp {
-    0% {transform:scale(0);}
-    100% {transform:scale(1);}
-  }
+/* Splash */
+#splash { position:fixed; width:100%; height:100%; background:#fff0f5; display:flex; align-items:center; justify-content:center; z-index:9999; display:none; }
+#splashLogo { width:200px; transition: transform 4s ease; }
+#splash.show #splashLogo { transform:scale(1.5); }
 
-  /* صفحة المنتجات */
-  #productsPage header {
-    background-color:#d63384;
-    color:white;
-    padding:20px;
-    font-size:30px;
-    text-align:center;
-  }
-  #productsPage h2 {
-    text-align:center;
-    margin:20px 0;
-  }
-  #productsContainer {
-    display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
-    gap:15px;
-    padding:0 20px 20px 20px;
-  }
-  .footer {
-    text-align:center;
-    margin:20px 0;
-  }
-  .product-card {
-    border:1px solid #d63384;
-    border-radius:10px;
-    overflow:hidden;
-    text-align:center;
-    background-color:white;
-    box-shadow:0 4px 6px rgba(0,0,0,0.1);
-  }
-  .product-card img {
-    width:100%;
-    height:250px;
-    object-fit:cover;
-  }
-  .product-card h3 {
-    margin:10px 0 5px 0;
-  }
-  .product-card p {
-    margin:0 0 10px 0;
-    color:#d63384;
-    font-weight:bold;
-  }
+/* صفحة المنتجات */
+header { background-color: #d63384; color:white; padding:20px; font-size:30px; }
+#productsContainer { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:20px; padding:20px; }
+.product { background:white; border-radius:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); padding:15px; transition:0.3s; }
+.product:hover { transform:translateY(-5px); }
+.gallery { display:grid; grid-template-columns:repeat(2,1fr); gap:5px; }
+.gallery img { width:100%; height:100px; object-fit:cover; border-radius:10px; cursor:pointer; transition:0.3s; }
+.gallery img:hover { transform:scale(1.05); }
+.colors { margin:10px 0; }
+.color { width:20px; height:20px; display:inline-block; border-radius:50%; cursor:pointer; border:2px solid #fff; margin:2px; }
+.active-color { border-color:#000; }
+button { background-color:#d63384; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer; margin-top:10px; }
+.footer { margin-top:30px; padding:20px; background:#d63384; color:white; }
+
+/* Modal */
+.modal { display:none; position:fixed; z-index:1000; padding-top:60px; left:0; top:0; width:100%; height:100%; background-color: rgba(0,0,0,0.8); }
+.modal img { display:block; margin:auto; max-width:80%; max-height:80%; border-radius:10px; }
+#closeModal { position:absolute; top:10px; right:20px; font-size:30px; color:white; cursor:pointer; }
+#prev,#next { position:absolute; top:50%; transform:translateY(-50%); font-size:40px; color:white; cursor:pointer; padding:10px; user-select:none; }
+#prev { left:10px; }
+#next { right:10px; }
+
 </style>
 </head>
 <body>
@@ -107,71 +68,124 @@
     <input type="text" id="username" placeholder="اسم المستخدم">
     <input type="password" id="password" placeholder="كلمة المرور">
     <button onclick="login()">دخول</button>
-    <p id="loginError" style="color:red;"></p>
+    <p id="loginError"></p>
 </div>
 
-<!-- شاشة سبلاش -->
+<!-- سبلاش -->
 <div id="splash">
   <img src="logo.jpg" alt="Rose Bag" id="splashLogo">
 </div>
 
 <!-- صفحة المنتجات -->
-<div id="productsPage">
-    <header>🌸 Rose Bag 🌸</header>
-    <h2>أهلا وسهلاً</h2>
-    <div id="productsContainer"></div>
-    <div class="footer">📞 للتواصل واتساب: 201080167099</div>
+<header>🌸 Rose Bag 🌸</header>
+<h2>أهلا وسهلاً </h2>
+<div id="productsContainer"></div>
+<div class="footer">📞 للتواصل واتساب: 201080167099</div>
+
+<!-- Modal -->
+<div id="myModal" class="modal">
+    <span id="closeModal">&times;</span>
+    <span id="prev">&#10094;</span>
+    <span id="next">&#10095;</span>
+    <img id="modalImg">
 </div>
 
 <script>
-function login() {
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const loginError = document.getElementById('loginError');
+// بيانات المنتجات
+const products = [
+    {id:1, colors:["black","red","blue"]},
+    {id:2, colors:["black","white","red"]},
+    {id:3, colors:["brown","black","beige"]},
+    {id:4, colors:["black","red","pink"]},
+    {id:5, colors:["blue","white","pink"]},
+    {id:6, colors:["black","gray","brown"]},
+    {id:7, colors:["red","pink","white"]},
+    {id:8, colors:["black","brown","beige"]},
+    {id:9, colors:["blue","gray","black"]},
+    {id:10, colors:["pink","white","red"]}
+];
 
-    // تحقق وهمي
-    if(username === 'user' && password === '1234') {
-        document.getElementById('loginPage').style.display = 'none';
-        document.getElementById('splash').style.display = 'flex';
+let currentImages = [];
+let currentIndex = 0;
 
-        setTimeout(() => {
-            document.getElementById('splash').style.display = 'none';
-            document.getElementById('productsPage').style.display = 'block';
+// فتح المعرض
+function openImageGallery(images, index){
+    currentImages = images;
+    currentIndex = index;
+    document.getElementById("myModal").style.display="block";
+    document.getElementById("modalImg").src = currentImages[currentIndex];
+}
+
+// تغيير اللون
+function changeColor(productId, color){
+    const gallery = document.querySelector(`#product${productId} .gallery`);
+    const images = [
+        `bag${productId}_${color}_front.jpg`,
+        `bag${productId}_${color}_side.jpg`,
+        `bag${productId}_${color}_back.jpg`,
+        `bag${productId}_${color}_open.jpg`
+    ];
+    gallery.innerHTML = images.map((img,i)=>`<img src="${img}" onclick="openImageGallery(${JSON.stringify(images)},${i})">`).join("");
+    const colorSpans = document.querySelectorAll(`#colors${productId} .color`);
+    colorSpans.forEach(span=>{
+        span.classList.remove("active-color");
+        if(span.style.backgroundColor === color) span.classList.add("active-color");
+    });
+}
+
+// أسهم المودال
+document.getElementById("prev").onclick = function(e){ e.stopPropagation(); currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; document.getElementById("modalImg").src=currentImages[currentIndex]; }
+document.getElementById("next").onclick = function(e){ e.stopPropagation(); currentIndex=(currentIndex+1)%currentImages.length; document.getElementById("modalImg").src=currentImages[currentIndex]; }
+document.getElementById("closeModal").onclick = function(){ document.getElementById("myModal").style.display="none"; }
+document.getElementById("modalImg").onclick = function(event){ event.stopPropagation(); }
+
+// تسجيل الدخول
+function login(){
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const error = document.getElementById("loginError");
+
+    if(username==="user" && password==="1234"){
+        document.getElementById("loginPage").style.display="none";
+        const splash = document.getElementById("splash");
+        splash.style.display="flex";
+        splash.classList.add("show");
+
+        setTimeout(()=>{
+            splash.style.display="none";
             loadProducts();
-        }, 2000); // مدة السبلاش بالمللي ثانية
+        }, 3000); // مدة السبلاش
     } else {
-        loginError.textContent = 'اسم المستخدم أو كلمة المرور خاطئة!';
+        error.textContent="اسم المستخدم أو كلمة المرور خاطئة!";
     }
 }
 
-// تحميل المنتجات Grid
-function loadProducts() {
-    const products = [
-        {name: 'شنطة وردية', price: '2000 جنيه', img: 'bag1.jpg'},
-        {name: 'شنطة سوداء', price: '2500 جنيه', img: 'bag2.jpg'},
-        {name: 'شنطة بيضاء', price: '2200 جنيه', img: 'bag3.jpg'},
-        {name: 'شنطة حمراء', price: '2300 جنيه', img: 'bag4.jpg'},
-        {name: 'شنطة زرقاء', price: '2400 جنيه', img: 'bag5.jpg'},
-        {name: 'شنطة خضراء', price: '2100 جنيه', img: 'bag6.jpg'},
-        {name: 'شنطة بنفسجية', price: '2600 جنيه', img: 'bag7.jpg'},
-        {name: 'شنطة برتقالية', price: '2250 جنيه', img: 'bag8.jpg'},
-        {name: 'شنطة بيج', price: '2150 جنيه', img: 'bag9.jpg'},
-        {name: 'شنطة رمادية', price: '2050 جنيه', img: 'bag10.jpg'},
-        // ممكن تضيفي حتى 30 منتج بنفس الشكل
-    ];
-
-    const container = document.getElementById('productsContainer');
-    container.innerHTML = '';
-
-    products.forEach(p => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `
-            <img src="${p.img}" alt="${p.name}">
-            <h3>${p.name}</h3>
-            <p>${p.price}</p>
-        `;
-        container.appendChild(card);
+// تحميل المنتجات
+function loadProducts(){
+    const container = document.getElementById("productsContainer");
+    container.innerHTML = "";
+    products.forEach(p=>{
+        const defaultColor = p.colors[0];
+        const images = [
+            `bag${p.id}_${defaultColor}_front.jpg`,
+            `bag${p.id}_${defaultColor}_side.jpg`,
+            `bag${p.id}_${defaultColor}_back.jpg`,
+            `bag${p.id}_${defaultColor}_open.jpg`
+        ];
+        container.innerHTML += `
+        <div class="product" id="product${p.id}">
+            <div class="gallery">
+                ${images.map((img,i)=>`<img src="${img}" onclick='openImageGallery(${JSON.stringify(images)},${i})'>`).join("")}
+            </div>
+            <div class="colors" id="colors${p.id}">
+                ${p.colors.map((c,index)=>`<span class="color ${index===0?'active-color':''}" style="background:${c}" onclick="changeColor(${p.id},'${c}')"></span>`).join("")}
+            </div>
+            <h3>شنطة ${p.id}</h3>
+            <p>السعر: ${200 + p.id*10} جنيه</p>
+            <a href="https://wa.me/201080167099?text=عايزة%20اطلب%20شنطة%20${p.id}">
+                <button>اطلب الآن</button>
+            </a>
+        </div>`;
     });
 }
 </script>
