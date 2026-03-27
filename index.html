@@ -6,20 +6,20 @@
 <style>
 body { font-family: Arial; background-color: #fff0f5; margin:0; text-align:center; }
 
-/* تسجيل الدخول */
-#loginPage {
+/* تسجيل الدخول/تسجيل جديد */
+#authPage {
   display:none;
   flex-direction:column;
   align-items:center;
   justify-content:center;
   height:100vh;
 }
-#loginPage input, #loginPage select {
+#authPage input, #authPage select {
   padding:10px;
   margin:5px;
   width:200px;
 }
-#loginPage button {
+#authPage button {
   padding:10px 20px;
   margin-top:10px;
   background-color:#d63384;
@@ -88,9 +88,9 @@ button { background-color:#d63384; color:white; border:none; padding:10px; borde
   <img src="logo.jpg" id="splashLogo">
 </div>
 
-<!-- تسجيل الدخول -->
-<div id="loginPage">
-  <h2 id="loginTitle">تسجيل الدخول</h2>
+<!-- صفحة التسجيل/تسجيل الدخول -->
+<div id="authPage">
+  <h2 id="authTitle">تسجيل جديد</h2>
   
   <!-- اختيار اللغة -->
   <select id="langSelect" onchange="changeLanguage()">
@@ -100,7 +100,7 @@ button { background-color:#d63384; color:white; border:none; padding:10px; borde
 
   <input type="email" id="email" placeholder="ادخلي الإيميل">
   <input type="password" id="password" placeholder="كلمة المرور">
-  <button onclick="login()" id="loginBtn">دخول</button>
+  <button onclick="signup()" id="authBtn">سجلي الآن</button>
   <p id="loginError"></p>
 </div>
 
@@ -109,7 +109,6 @@ button { background-color:#d63384; color:white; border:none; padding:10px; borde
 <h2 id="welcome">أهلا وسهلاً</h2>
 
 <div id="productsContainer"></div>
-
 <div class="footer" id="footer">📞 واتساب: 201080167099</div>
 
 <!-- Modal -->
@@ -123,19 +122,19 @@ button { background-color:#d63384; color:white; border:none; padding:10px; borde
 <script>
 const texts = {
     ar: {
-        loginTitle: "تسجيل الدخول",
+        authTitle: "تسجيل جديد",
         email: "ادخلي الإيميل",
         password: "كلمة المرور",
-        loginBtn: "دخول",
+        authBtn: "سجلي الآن",
         errorEmail: "اكتبي إيميل صحيح",
         errorPass: "كلمة المرور ضعيفة",
         welcome: "أهلا وسهلاً"
     },
     en: {
-        loginTitle: "Login",
+        authTitle: "Sign Up",
         email: "Enter email",
         password: "Password",
-        loginBtn: "Login",
+        authBtn: "Sign Up",
         errorEmail: "Enter valid email",
         errorPass: "Password too short",
         welcome: "Welcome"
@@ -149,10 +148,9 @@ let currentIndex = 0;
 window.onload = function(){
     let splash = document.getElementById("splash");
     splash.classList.add("show");
-
     setTimeout(()=>{
         splash.style.display="none";
-        document.getElementById("loginPage").style.display="flex";
+        document.getElementById("authPage").style.display="flex";
         changeLanguage();
     },4000);
 };
@@ -160,15 +158,15 @@ window.onload = function(){
 // تغيير اللغة
 function changeLanguage(){
     currentLang = document.getElementById("langSelect").value;
-    document.getElementById("loginTitle").textContent = texts[currentLang].loginTitle;
+    document.getElementById("authTitle").textContent = texts[currentLang].authTitle;
     document.getElementById("email").placeholder = texts[currentLang].email;
     document.getElementById("password").placeholder = texts[currentLang].password;
-    document.getElementById("loginBtn").textContent = texts[currentLang].loginBtn;
+    document.getElementById("authBtn").textContent = texts[currentLang].authBtn;
     document.getElementById("loginError").textContent = "";
 }
 
-// تسجيل الدخول
-function login(){
+// تسجيل جديد
+function signup(){
     let email = document.getElementById("email").value.trim();
     let pass = document.getElementById("password").value.trim();
     let error = document.getElementById("loginError");
@@ -178,13 +176,13 @@ function login(){
         error.textContent = texts[currentLang].errorEmail;
         return;
     }
-
     if(pass.length < 4){
         error.textContent = texts[currentLang].errorPass;
         return;
     }
 
-    document.getElementById("loginPage").style.display="none";
+    // بعد نجاح التسجيل
+    document.getElementById("authPage").style.display="none";
     document.getElementById("mainHeader").style.display="block";
     document.getElementById("welcome").style.display="block";
     document.getElementById("welcome").textContent = texts[currentLang].welcome;
