@@ -6,51 +6,25 @@
 <style>
 body { font-family: Arial; background-color: #fff0f5; margin:0; text-align:center; }
 
-/* تسجيل الدخول */
-#loginPage {
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  height:100vh;
-}
-#loginPage input {
-  padding:10px;
-  margin:5px;
-  width:200px;
-}
-#loginPage button {
-  padding:10px 20px;
-  margin-top:10px;
-  background-color:#d63384;
-  color:white;
-  border:none;
-  border-radius:5px;
-  cursor:pointer;
-}
-#loginPage button:hover { background-color:#c12d76; }
-#loginError { color:red; margin-top:5px; }
-
-/* Splash */
-#splash { position:fixed; width:100%; height:100%; background:#fff0f5; display:flex; align-items:center; justify-content:center; z-index:9999; display:none; }
-#splashLogo { width:200px; transition: transform 4s ease; }
-#splash.show #splashLogo { transform:scale(1.5); }
-
-/* صفحة المنتجات */
 header { background-color: #d63384; color:white; padding:20px; font-size:30px; }
+
 #productsContainer { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:20px; padding:20px; }
+
 .product { background:white; border-radius:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); padding:15px; transition:0.3s; }
 .product:hover { transform:translateY(-5px); }
+
 .gallery { display:grid; grid-template-columns:repeat(2,1fr); gap:5px; }
 .gallery img { width:100%; height:100px; object-fit:cover; border-radius:10px; cursor:pointer; transition:0.3s; }
 .gallery img:hover { transform:scale(1.05); }
+
 .colors { margin:10px 0; }
 .color { width:20px; height:20px; display:inline-block; border-radius:50%; cursor:pointer; border:2px solid #fff; margin:2px; }
 .active-color { border-color:#000; }
+
 button { background-color:#d63384; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer; margin-top:10px; }
+
 .footer { margin-top:30px; padding:20px; background:#d63384; color:white; }
 
-/* Modal */
 .modal { display:none; position:fixed; z-index:1000; padding-top:60px; left:0; top:0; width:100%; height:100%; background-color: rgba(0,0,0,0.8); }
 .modal img { display:block; margin:auto; max-width:80%; max-height:80%; border-radius:10px; }
 #closeModal { position:absolute; top:10px; right:20px; font-size:30px; color:white; cursor:pointer; }
@@ -58,28 +32,23 @@ button { background-color:#d63384; color:white; border:none; padding:10px; borde
 #prev { left:10px; }
 #next { right:10px; }
 
+/* Splash */
+#splash { position:fixed; width:100%; height:100%; background:#fff0f5; display:flex; align-items:center; justify-content:center; z-index:9999; }
+#splashLogo { width:200px; transition: transform 4s ease; }
+#splash.show #splashLogo { transform:scale(1.5); }
 </style>
 </head>
 <body>
 
-<!-- صفحة تسجيل الدخول -->
-<div id="loginPage">
-    <h2>تسجيل الدخول</h2>
-    <input type="text" id="username" placeholder="اسم المستخدم">
-    <input type="password" id="password" placeholder="كلمة المرور">
-    <button onclick="login()">دخول</button>
-    <p id="loginError"></p>
-</div>
-
-<!-- سبلاش -->
 <div id="splash">
   <img src="logo.jpg" alt="Rose Bag" id="splashLogo">
 </div>
 
-<!-- صفحة المنتجات -->
 <header>🌸 Rose Bag 🌸</header>
 <h2>أهلا وسهلاً </h2>
+
 <div id="productsContainer"></div>
+
 <div class="footer">📞 للتواصل واتساب: 201080167099</div>
 
 <!-- Modal -->
@@ -91,7 +60,6 @@ button { background-color:#d63384; color:white; border:none; padding:10px; borde
 </div>
 
 <script>
-// بيانات المنتجات
 const products = [
     {id:1, colors:["black","red","blue"]},
     {id:2, colors:["black","white","red"]},
@@ -108,15 +76,14 @@ const products = [
 let currentImages = [];
 let currentIndex = 0;
 
-// فتح المعرض
 function openImageGallery(images, index){
     currentImages = images;
     currentIndex = index;
-    document.getElementById("myModal").style.display="block";
+    const modal = document.getElementById("myModal");
+    modal.style.display="block";
     document.getElementById("modalImg").src = currentImages[currentIndex];
 }
 
-// تغيير اللون
 function changeColor(productId, color){
     const gallery = document.querySelector(`#product${productId} .gallery`);
     const images = [
@@ -126,6 +93,7 @@ function changeColor(productId, color){
         `bag${productId}_${color}_open.jpg`
     ];
     gallery.innerHTML = images.map((img,i)=>`<img src="${img}" onclick="openImageGallery(${JSON.stringify(images)},${i})">`).join("");
+
     const colorSpans = document.querySelectorAll(`#colors${productId} .color`);
     colorSpans.forEach(span=>{
         span.classList.remove("active-color");
@@ -134,36 +102,27 @@ function changeColor(productId, color){
 }
 
 // أسهم المودال
-document.getElementById("prev").onclick = function(e){ e.stopPropagation(); currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; document.getElementById("modalImg").src=currentImages[currentIndex]; }
-document.getElementById("next").onclick = function(e){ e.stopPropagation(); currentIndex=(currentIndex+1)%currentImages.length; document.getElementById("modalImg").src=currentImages[currentIndex]; }
+document.getElementById("prev").onclick = function(e){
+    e.stopPropagation();
+    currentIndex = (currentIndex-1+currentImages.length)%currentImages.length;
+    document.getElementById("modalImg").src = currentImages[currentIndex];
+}
+document.getElementById("next").onclick = function(e){
+    e.stopPropagation();
+    currentIndex = (currentIndex+1)%currentImages.length;
+    document.getElementById("modalImg").src = currentImages[currentIndex];
+}
+
+// إغلاق المودال
 document.getElementById("closeModal").onclick = function(){ document.getElementById("myModal").style.display="none"; }
 document.getElementById("modalImg").onclick = function(event){ event.stopPropagation(); }
 
-// تسجيل الدخول
-function login(){
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const error = document.getElementById("loginError");
+window.onload = function(){
+    const splash = document.getElementById("splash");
+    splash.classList.add("show");
+    setTimeout(()=>{ splash.style.display='none'; }, 4000);
 
-    if(username==="user" && password==="1234"){
-        document.getElementById("loginPage").style.display="none";
-        const splash = document.getElementById("splash");
-        splash.style.display="flex";
-        splash.classList.add("show");
-
-        setTimeout(()=>{
-            splash.style.display="none";
-            loadProducts();
-        }, 3000); // مدة السبلاش
-    } else {
-        error.textContent="اسم المستخدم أو كلمة المرور خاطئة!";
-    }
-}
-
-// تحميل المنتجات
-function loadProducts(){
     const container = document.getElementById("productsContainer");
-    container.innerHTML = "";
     products.forEach(p=>{
         const defaultColor = p.colors[0];
         const images = [
@@ -187,7 +146,7 @@ function loadProducts(){
             </a>
         </div>`;
     });
-}
+};
 </script>
 
 </body>
