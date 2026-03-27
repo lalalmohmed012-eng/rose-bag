@@ -8,27 +8,9 @@
 <style>
 body { font-family: Arial; background-color: #fff0f5; margin:0; text-align:center; }
 
-/* اختيار اللغة */
-#languagePage {
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  height:100vh;
-}
-#languagePage button {
-  padding:10px 20px;
-  margin:10px;
-  background:#d63384;
-  color:white;
-  border:none;
-  border-radius:5px;
-  cursor:pointer;
-}
-
 /* تسجيل الدخول */
 #loginPage {
-  display:none;
+  display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
@@ -51,30 +33,51 @@ body { font-family: Arial; background-color: #fff0f5; margin:0; text-align:cente
 #loginError { color:red; margin-top:5px; }
 
 /* Splash */
-#splash { position:fixed; width:100%; height:100%; background:#fff0f5; display:flex; align-items:center; justify-content:center; z-index:9999; display:none; }
-#splashLogo { width:200px; transition: transform 4s ease; }
-#splash.show #splashLogo { transform:scale(1.5); }
+#splash {
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:#fff0f5;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  display:none;
+}
+#splashLogo {
+  width:200px;
+  transition: transform 4s ease;
+}
+#splash.show #splashLogo {
+  transform:scale(1.5);
+}
 
-/* صفحة المنتجات */
-header { background-color: #d63384; color:white; padding:20px; font-size:30px; display:none; }
-#welcomeText { display:none; }
+/* المنتجات */
+header { background-color: #d63384; color:white; padding:20px; font-size:30px; }
 #productsContainer { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:20px; padding:20px; }
-.product { background:white; border-radius:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); padding:15px; transition:0.3s; }
-.product:hover { transform:translateY(-5px); }
+.product { background:white; border-radius:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); padding:15px; }
 .gallery { display:grid; grid-template-columns:repeat(2,1fr); gap:5px; }
-.gallery img { width:100%; height:100px; object-fit:cover; border-radius:10px; cursor:pointer; transition:0.3s; }
-.gallery img:hover { transform:scale(1.05); }
+.gallery img { width:100%; height:100px; object-fit:cover; border-radius:10px; cursor:pointer; }
 .colors { margin:10px 0; }
 .color { width:20px; height:20px; display:inline-block; border-radius:50%; cursor:pointer; border:2px solid #fff; margin:2px; }
 .active-color { border-color:#000; }
-button { background-color:#d63384; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer; margin-top:10px; }
-.footer { margin-top:30px; padding:20px; background:#d63384; color:white; display:none; }
+
+button {
+  background-color:#d63384;
+  color:white;
+  border:none;
+  padding:10px;
+  border-radius:5px;
+  cursor:pointer;
+}
+
+.footer { margin-top:30px; padding:20px; background:#d63384; color:white; }
 
 /* Modal */
-.modal { display:none; position:fixed; z-index:1000; padding-top:60px; left:0; top:0; width:100%; height:100%; background-color: rgba(0,0,0,0.8); }
-.modal img { display:block; margin:auto; max-width:80%; max-height:80%; border-radius:10px; }
+.modal { display:none; position:fixed; z-index:1000; width:100%; height:100%; background:rgba(0,0,0,0.8); }
+.modal img { display:block; margin:auto; max-width:80%; max-height:80%; margin-top:60px; }
 #closeModal { position:absolute; top:10px; right:20px; font-size:30px; color:white; cursor:pointer; }
-#prev,#next { position:absolute; top:50%; transform:translateY(-50%); font-size:40px; color:white; cursor:pointer; padding:10px; user-select:none; }
+#prev,#next { position:absolute; top:50%; font-size:40px; color:white; cursor:pointer; }
 #prev { left:10px; }
 #next { right:10px; }
 </style>
@@ -83,21 +86,13 @@ button { background-color:#d63384; color:white; border:none; padding:10px; borde
 
 <body>
 
-<!-- اختيار اللغة -->
-
-<div id="languagePage">
-    <h2>اختاري اللغة</h2>
-    <button onclick="setLanguage('ar')">العربية</button>
-    <button onclick="setLanguage('en')">English</button>
-</div>
-
-<!-- تسجيل الدخول -->
+<!-- تسجيل الدخول بالإيميل -->
 
 <div id="loginPage">
-    <h2 id="loginTitle">تسجيل الدخول</h2>
-    <input type="text" id="username" placeholder="اسم المستخدم">
+    <h2>تسجيل الدخول</h2>
+    <input type="email" id="email" placeholder="ادخلي الإيميل">
     <input type="password" id="password" placeholder="كلمة المرور">
-    <button onclick="login()" id="loginBtn">دخول</button>
+    <button onclick="login()">دخول</button>
     <p id="loginError"></p>
 </div>
 
@@ -107,75 +102,23 @@ button { background-color:#d63384; color:white; border:none; padding:10px; borde
   <img src="logo.jpg" alt="Rose Bag" id="splashLogo">
 </div>
 
-<!-- صفحة المنتجات -->
+<!-- المنتجات -->
 
-<header id="mainHeader">🌸 Rose Bag 🌸</header>
-<h2 id="welcomeText">أهلا وسهلاً</h2>
+<header>🌸 Rose Bag 🌸</header>
+<h2>أهلا وسهلاً</h2>
 <div id="productsContainer"></div>
-<div class="footer" id="footer">📞 للتواصل واتساب: 201080167099</div>
+<div class="footer">📞 للتواصل واتساب: 201080167099</div>
 
 <!-- Modal -->
 
 <div id="myModal" class="modal">
-    <span id="closeModal">&times;</span>
-    <span id="prev">&#10094;</span>
-    <span id="next">&#10095;</span>
-    <img id="modalImg">
+  <span id="closeModal">&times;</span>
+  <span id="prev">&#10094;</span>
+  <span id="next">&#10095;</span>
+  <img id="modalImg">
 </div>
 
 <script>
-
-let currentLang = "ar";
-
-// اختيار اللغة
-function setLanguage(lang){
-    currentLang = lang;
-    document.getElementById("languagePage").style.display="none";
-    document.getElementById("loginPage").style.display="flex";
-
-    if(lang==="en"){
-        document.getElementById("loginTitle").textContent="Login";
-        document.getElementById("username").placeholder="Username";
-        document.getElementById("password").placeholder="Password";
-        document.getElementById("loginBtn").textContent="Login";
-    }
-}
-
-// تسجيل الدخول
-function login(){
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const error = document.getElementById("loginError");
-
-    if(username==="user" && password==="1234"){
-        document.getElementById("loginPage").style.display="none";
-
-        const splash = document.getElementById("splash");
-        splash.style.display="flex";
-        splash.classList.add("show");
-
-        setTimeout(()=>{
-            splash.style.display="none";
-
-            document.getElementById("mainHeader").style.display="block";
-            document.getElementById("welcomeText").style.display="block";
-            document.getElementById("footer").style.display="block";
-
-            if(currentLang==="en"){
-                document.getElementById("welcomeText").textContent="Welcome";
-                document.getElementById("footer").textContent="📞 WhatsApp: 201080167099";
-            }
-
-            loadProducts();
-
-        }, 3000);
-
-    } else {
-        error.textContent = currentLang==="en" ? "Wrong data!" : "اسم المستخدم أو كلمة المرور خاطئة!";
-    }
-}
-
-// باقي كودك زي ما هو 👇
 
 // بيانات المنتجات
 const products = [
@@ -194,6 +137,7 @@ const products = [
 let currentImages = [];
 let currentIndex = 0;
 
+// فتح الصور
 function openImageGallery(images, index){
     currentImages = images;
     currentIndex = index;
@@ -201,6 +145,7 @@ function openImageGallery(images, index){
     document.getElementById("modalImg").src = currentImages[currentIndex];
 }
 
+// تغيير اللون
 function changeColor(productId, color){
     const gallery = document.querySelector(`#product${productId} .gallery`);
     const images = [
@@ -212,32 +157,70 @@ function changeColor(productId, color){
     gallery.innerHTML = images.map((img,i)=>`<img src="${img}" onclick="openImageGallery(${JSON.stringify(images)},${i})">`).join("");
 }
 
-document.getElementById("prev").onclick = function(e){ e.stopPropagation(); currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; document.getElementById("modalImg").src=currentImages[currentIndex]; }
-document.getElementById("next").onclick = function(e){ e.stopPropagation(); currentIndex=(currentIndex+1)%currentImages.length; document.getElementById("modalImg").src=currentImages[currentIndex]; }
+// الأسهم
+document.getElementById("prev").onclick = function(){ currentIndex=(currentIndex-1+currentImages.length)%currentImages.length; document.getElementById("modalImg").src=currentImages[currentIndex]; }
+document.getElementById("next").onclick = function(){ currentIndex=(currentIndex+1)%currentImages.length; document.getElementById("modalImg").src=currentImages[currentIndex]; }
 document.getElementById("closeModal").onclick = function(){ document.getElementById("myModal").style.display="none"; }
 
+// تسجيل الدخول بالإيميل
+function login(){
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const error = document.getElementById("loginError");
+
+    const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+
+    if(!emailPattern.test(email)){
+        error.textContent = "اكتبي إيميل صحيح!";
+        return;
+    }
+
+    if(password.length < 4){
+        error.textContent = "كلمة المرور ضعيفة!";
+        return;
+    }
+
+    document.getElementById("loginPage").style.display="none";
+
+    const splash = document.getElementById("splash");
+    splash.style.display="flex";
+    splash.classList.add("show");
+
+    setTimeout(()=>{
+        splash.style.display="none";
+        loadProducts();
+    }, 3000);
+}
+
+// تحميل المنتجات
 function loadProducts(){
     const container = document.getElementById("productsContainer");
     container.innerHTML = "";
+
     products.forEach(p=>{
         const defaultColor = p.colors[0];
+
         const images = [
             `bag${p.id}_${defaultColor}_front.jpg`,
             `bag${p.id}_${defaultColor}_side.jpg`,
             `bag${p.id}_${defaultColor}_back.jpg`,
             `bag${p.id}_${defaultColor}_open.jpg`
         ];
+
         container.innerHTML += `
         <div class="product" id="product${p.id}">
             <div class="gallery">
                 ${images.map((img,i)=>`<img src="${img}" onclick='openImageGallery(${JSON.stringify(images)},${i})'>`).join("")}
             </div>
+
             <div class="colors">
-                ${p.colors.map((c)=>`<span class="color" style="background:${c}" onclick="changeColor(${p.id},'${c}')"></span>`).join("")}
+                ${p.colors.map(c=>`<span class="color" style="background:${c}" onclick="changeColor(${p.id},'${c}')"></span>`).join("")}
             </div>
+
             <h3>شنطة ${p.id}</h3>
             <p>السعر: ${200 + p.id*10} جنيه</p>
-            <a href="https://wa.me/201080167099">
+
+            <a href="https://wa.me/201080167099?text=عايزة%20اطلب%20شنطة%20${p.id}">
                 <button>اطلب الآن</button>
             </a>
         </div>`;
