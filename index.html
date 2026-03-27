@@ -1,130 +1,19 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-<meta charset="UTF-8">
-<title>Rose Bag</title>
-<style>
-body { font-family: Arial; background-color: #fff0f5; margin:0; text-align:center; }
-header { background-color: #d63384; color:white; padding:20px; font-size:30px; }
-button { background:#d63384; color:white; border:none; padding:10px; cursor:pointer; border-radius:5px; margin:5px; }
-.lang-btn { position:absolute; top:10px; right:10px; padding:5px 10px; border-radius:5px; cursor:pointer; background:#fff0f5; border:1px solid #d63384; }
-
-#loginPage, #registerPage, #mainSite { display:none; }
-.login-box { background:white; padding:20px; border-radius:15px; width:300px; margin:auto; margin-top:100px; box-shadow:0 4px 15px rgba(0,0,0,0.2);}
-input { width:90%; padding:10px; margin:10px; }
-
-#productsContainer { padding:20px; }
-.product { background:white; border-radius:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); padding:15px; margin-bottom:20px; text-align:center; }
-.product img { width:100%; height:150px; object-fit:cover; margin-bottom:5px; border-radius:10px; cursor:pointer; }
-
-.footer { margin-top:30px; padding:20px; background:#d63384; color:white; }
-
-/* Modal */
-.modal { display:none; position:fixed; z-index:1000; width:100%; height:100%; background:rgba(0,0,0,0.8); top:0; left:0; padding-top:50px; }
-.modal img { display:block; margin:auto; max-width:80%; max-height:80%; border-radius:10px; }
-#closeModal { position:absolute; top:10px; right:20px; font-size:30px; color:white; cursor:pointer; }
-
-/* Splash */
-#splash { position:fixed; width:100%; height:100%; background:#fff0f5; display:flex; align-items:center; justify-content:center; z-index:9999; }
-#splashLogo { width:200px; transition: transform 4s ease; }
-#splash.show #splashLogo { transform:scale(1.5); }
-
-</style>
-</head>
-<body>
-
-<!-- زر اللغة -->
-<button class="lang-btn" onclick="toggleLang()">🌐</button>
-
-<!-- تسجيل الدخول -->
-<div id="loginPage" style="display:block;">
-  <div class="login-box">
-    <h2 id="loginTitle">تسجيل الدخول</h2>
-    <input type="text" id="usernameLogin" placeholder="اسم المستخدم"><br>
-    <input type="password" id="passwordLogin" placeholder="كلمة المرور"><br>
-    <button onclick="login()" id="loginBtn">دخول</button>
-    <p id="loginError" style="color:red;"></p>
-    <p id="toRegister">ما عندك حساب؟ <a href="#" onclick="showRegister()">سجل جديد</a></p>
-  </div>
-</div>
-
-<!-- تسجيل جديد -->
-<div id="registerPage">
-  <div class="login-box">
-    <h2 id="registerTitle">تسجيل جديد</h2>
-    <input type="text" id="usernameReg" placeholder="اسم المستخدم"><br>
-    <input type="password" id="passwordReg" placeholder="كلمة المرور"><br>
-    <button onclick="register()" id="registerBtn">سجل الآن</button>
-    <p id="regError" style="color:red;"></p>
-    <p id="toLogin">عندك حساب؟ <a href="#" onclick="showLogin()">دخول</a></p>
-  </div>
-</div>
-
-<!-- Splash Screen -->
-<div id="splash">
-  <img src="logo.jpg" alt="Rose Bag" id="splashLogo">
-</div>
-
-<!-- الموقع -->
-<div id="mainSite">
-<header>🌸 Rose Bag 🌸</header>
-<h2 id="welcomeText">أهلا وسهلاً</h2>
-<div id="productsContainer"></div>
-<div class="footer">📞 للتواصل واتساب: 201080167099</div>
-</div>
-
-<!-- Modal -->
-<div id="myModal" class="modal" onclick="this.style.display='none'">
-    <span id="closeModal">&times;</span>
-    <img id="modalImg">
-</div>
-
-<script>
-// اللغة الافتراضية
-let lang="ar";
-let users = JSON.parse(localStorage.getItem("users") || "[]");
-
-// تغيير اللغة
-function toggleLang(){
-  if(lang==="ar"){
-    lang="en";
-    document.documentElement.lang="en";
-    document.getElementById("loginTitle").innerText="Login";
-    document.getElementById("loginBtn").innerText="Login";
-    document.getElementById("usernameLogin").placeholder="Username";
-    document.getElementById("passwordLogin").placeholder="Password";
-    document.getElementById("registerTitle").innerText="Register";
-    document.getElementById("registerBtn").innerText="Register Now";
-    document.getElementById("usernameReg").placeholder="Username";
-    document.getElementById("passwordReg").placeholder="Password";
-    document.getElementById("toRegister").innerHTML='No account? <a href="#" onclick="showRegister()">Register</a>';
-    document.getElementById("toLogin").innerHTML='Already have account? <a href="#" onclick="showLogin()">Login</a>';
-    document.getElementById("welcomeText").innerText="Welcome!";
+// تسجيل دخول
+function login(){
+  let user=document.getElementById("usernameLogin").value.trim();
+  let pass=document.getElementById("passwordLogin").value.trim();
+  let found = users.find(u=>u.username===user && u.password===pass);
+  if(found){
+    // إخفاء صفحات تسجيل الدخول والتسجيل
+    document.getElementById("loginPage").style.display="none";
+    document.getElementById("registerPage").style.display="none";
+    // عرض الموقع مباشرة بدون Splash (أو يمكن تبقيه)
+    document.getElementById("splash").style.display="none"; 
+    document.getElementById("mainSite").style.display="block";
+    loadProducts();
   }else{
-    lang="ar";
-    document.documentElement.lang="ar";
-    document.getElementById("loginTitle").innerText="تسجيل الدخول";
-    document.getElementById("loginBtn").innerText="دخول";
-    document.getElementById("usernameLogin").placeholder="اسم المستخدم";
-    document.getElementById("passwordLogin").placeholder="كلمة المرور";
-    document.getElementById("registerTitle").innerText="تسجيل جديد";
-    document.getElementById("registerBtn").innerText="سجل الآن";
-    document.getElementById("usernameReg").placeholder="اسم المستخدم";
-    document.getElementById("passwordReg").placeholder="كلمة المرور";
-    document.getElementById("toRegister").innerHTML='ما عندك حساب؟ <a href="#" onclick="showRegister()">سجل جديد</a>';
-    document.getElementById("toLogin").innerHTML='عندك حساب؟ <a href="#" onclick="showLogin()">دخول</a>';
-    document.getElementById("welcomeText").innerText="أهلا وسهلاً";
+    document.getElementById("loginError").innerText=(lang==="ar"?"بيانات خاطئة":"Wrong data");
   }
-}
-
-// عرض تسجيل جديد
-function showRegister(){
-  document.getElementById("loginPage").style.display="none";
-  document.getElementById("registerPage").style.display="block";
-}
-function showLogin(){
-  document.getElementById("registerPage").style.display="none";
-  document.getElementById("loginPage").style.display="block";
 }
 
 // تسجيل جديد
@@ -135,81 +24,8 @@ function register(){
   if(users.find(u=>u.username===user)){ document.getElementById("regError").innerText=(lang==="ar"?"اسم المستخدم موجود بالفعل":"Username already exists"); return;}
   users.push({username:user,password:pass});
   localStorage.setItem("users",JSON.stringify(users));
-  alert(lang==="ar"?"تم التسجيل بنجاح!":"Registered successfully!");
-  showLogin();
+  // الدخول مباشرة بعد التسجيل
+  document.getElementById("usernameLogin").value = user;
+  document.getElementById("passwordLogin").value = pass;
+  login();
 }
-
-// تسجيل دخول
-function login(){
-  let user=document.getElementById("usernameLogin").value.trim();
-  let pass=document.getElementById("passwordLogin").value.trim();
-  let found = users.find(u=>u.username===user && u.password===pass);
-  if(found){
-    document.getElementById("loginPage").style.display="none";
-    document.getElementById("registerPage").style.display="none";
-    document.getElementById("splash").style.display="flex";
-    setTimeout(()=>{ document.getElementById("splash").style.display="none"; document.getElementById("mainSite").style.display="block"; loadProducts(); }, 3000);
-  }else{
-    document.getElementById("loginError").innerText=(lang==="ar"?"بيانات خاطئة":"Wrong data");
-  }
-}
-
-// المنتجات
-const products = [
-    {id:1, colors:["black","red","blue"]},
-    {id:2, colors:["black","white","red"]},
-    {id:3, colors:["brown","black","beige"]},
-    {id:4, colors:["black","red","pink"]},
-    {id:5, colors:["blue","white","pink"]},
-    {id:6, colors:["black","gray","brown"]},
-    {id:7, colors:["red","pink","white"]},
-    {id:8, colors:["black","brown","beige"]},
-    {id:9, colors:["blue","gray","black"]},
-    {id:10, colors:["pink","white","red"]}
-];
-let currentImages=[],currentIndex=0;
-
-function loadProducts(){
-  const container = document.getElementById("productsContainer");
-  container.innerHTML="";
-  products.forEach(p=>{
-    const defaultColor=p.colors[0];
-    const images=[
-      `bag${p.id}_${defaultColor}_front.jpg`,
-      `bag${p.id}_${defaultColor}_side.jpg`,
-      `bag${p.id}_${defaultColor}_back.jpg`,
-      `bag${p.id}_${defaultColor}_open.jpg`
-    ];
-    container.innerHTML+=`
-      <div class="product" id="product${p.id}">
-        ${images.map(img=>`<img src="${img}" onclick="openImage('${img}')">`).join("")}
-        <div class="colors" id="colors${p.id}">
-          ${p.colors.map((c,i)=>`<span class="color ${i===0?'active-color':''}" style="background:${c}" onclick="changeColor(${p.id},'${c}')"></span>`).join("")}
-        </div>
-        <h3>شنطة ${p.id}</h3>
-        <p>السعر: ${200+p.id*10} جنيه</p>
-        <a href="https://wa.me/201080167099?text=عايزة%20اطلب%20شنطة%20${p.id}"><button>اطلب الآن</button></a>
-      </div>
-    `;
-  });
-}
-
-// مودال
-function openImage(src){ currentImages=[src]; currentIndex=0; document.getElementById("modalImg").src=src; document.getElementById("myModal").style.display="block";}
-document.getElementById("closeModal").onclick=function(){document.getElementById("myModal").style.display="none";}
-function changeColor(productId,color){
-  const gallery=document.querySelector(`#product${productId}`);
-  const images=[
-    `bag${productId}_${color}_front.jpg`,
-    `bag${productId}_${color}_side.jpg`,
-    `bag${productId}_${color}_back.jpg`,
-    `bag${productId}_${color}_open.jpg`
-  ];
-  gallery.querySelectorAll('img').forEach((img,i)=>{img.src=images[i];});
-  const colorSpans=document.querySelectorAll(`#colors${productId} .color`);
-  colorSpans.forEach(span=>{span.classList.remove('active-color'); if(span.style.backgroundColor===color) span.classList.add('active-color');});
-}
-</script>
-
-</body>
-</html>
