@@ -1,16 +1,180 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>Rose Bag</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #fff0f5;
+  }
+
+  /* صفحة تسجيل الدخول */
+  #loginPage {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    height:100vh;
+  }
+  #loginPage input {
+    padding:10px;
+    margin:5px;
+    width:200px;
+  }
+  #loginPage button {
+    padding:10px 20px;
+    margin-top:10px;
+    background-color:#d63384;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+  }
+  #loginPage button:hover {
+    background-color:#c12d76;
+  }
+
+  /* شاشة سبلاش */
+  #splash {
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    height:100vh;
+  }
+  #splashLogo {
+    width:200px;
+    height:auto;
+    animation: scaleUp 2s ease-in-out;
+  }
+  @keyframes scaleUp {
+    0% {transform:scale(0);}
+    100% {transform:scale(1);}
+  }
+
+  /* صفحة المنتجات */
+  #productsPage header {
+    background-color:#d63384;
+    color:white;
+    padding:20px;
+    font-size:30px;
+    text-align:center;
+  }
+  #productsPage h2 {
+    text-align:center;
+    margin:20px 0;
+  }
+  #productsContainer {
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
+    gap:15px;
+    padding:0 20px 20px 20px;
+  }
+  .footer {
+    text-align:center;
+    margin:20px 0;
+  }
+  .product-card {
+    border:1px solid #d63384;
+    border-radius:10px;
+    overflow:hidden;
+    text-align:center;
+    background-color:white;
+    box-shadow:0 4px 6px rgba(0,0,0,0.1);
+  }
+  .product-card img {
+    width:100%;
+    height:250px;
+    object-fit:cover;
+  }
+  .product-card h3 {
+    margin:10px 0 5px 0;
+  }
+  .product-card p {
+    margin:0 0 10px 0;
+    color:#d63384;
+    font-weight:bold;
+  }
+</style>
+</head>
+<body>
+
 <!-- صفحة تسجيل الدخول -->
-<div id="loginPage" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh;">
+<div id="loginPage">
     <h2>تسجيل الدخول</h2>
-    <input type="text" id="username" placeholder="اسم المستخدم" style="padding:10px; margin:5px;">
-    <input type="password" id="password" placeholder="كلمة المرور" style="padding:10px; margin:5px;">
+    <input type="text" id="username" placeholder="اسم المستخدم">
+    <input type="password" id="password" placeholder="كلمة المرور">
     <button onclick="login()">دخول</button>
     <p id="loginError" style="color:red;"></p>
 </div>
 
-<!-- باقي الصفحة (المنتجات) -->
-<div id="productsPage" style="display:none;">
+<!-- شاشة سبلاش -->
+<div id="splash">
+  <img src="logo.jpg" alt="Rose Bag" id="splashLogo">
+</div>
+
+<!-- صفحة المنتجات -->
+<div id="productsPage">
     <header>🌸 Rose Bag 🌸</header>
     <h2>أهلا وسهلاً</h2>
     <div id="productsContainer"></div>
     <div class="footer">📞 للتواصل واتساب: 201080167099</div>
 </div>
+
+<script>
+function login() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const loginError = document.getElementById('loginError');
+
+    // تحقق وهمي
+    if(username === 'user' && password === '1234') {
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('splash').style.display = 'flex';
+
+        setTimeout(() => {
+            document.getElementById('splash').style.display = 'none';
+            document.getElementById('productsPage').style.display = 'block';
+            loadProducts();
+        }, 2000); // مدة السبلاش بالمللي ثانية
+    } else {
+        loginError.textContent = 'اسم المستخدم أو كلمة المرور خاطئة!';
+    }
+}
+
+// تحميل المنتجات Grid
+function loadProducts() {
+    const products = [
+        {name: 'شنطة وردية', price: '2000 جنيه', img: 'bag1.jpg'},
+        {name: 'شنطة سوداء', price: '2500 جنيه', img: 'bag2.jpg'},
+        {name: 'شنطة بيضاء', price: '2200 جنيه', img: 'bag3.jpg'},
+        {name: 'شنطة حمراء', price: '2300 جنيه', img: 'bag4.jpg'},
+        {name: 'شنطة زرقاء', price: '2400 جنيه', img: 'bag5.jpg'},
+        {name: 'شنطة خضراء', price: '2100 جنيه', img: 'bag6.jpg'},
+        {name: 'شنطة بنفسجية', price: '2600 جنيه', img: 'bag7.jpg'},
+        {name: 'شنطة برتقالية', price: '2250 جنيه', img: 'bag8.jpg'},
+        {name: 'شنطة بيج', price: '2150 جنيه', img: 'bag9.jpg'},
+        {name: 'شنطة رمادية', price: '2050 جنيه', img: 'bag10.jpg'},
+        // ممكن تضيفي حتى 30 منتج بنفس الشكل
+    ];
+
+    const container = document.getElementById('productsContainer');
+    container.innerHTML = '';
+
+    products.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+            <img src="${p.img}" alt="${p.name}">
+            <h3>${p.name}</h3>
+            <p>${p.price}</p>
+        `;
+        container.appendChild(card);
+    });
+}
+</script>
+
+</body>
+</html>
